@@ -12,6 +12,13 @@
 {{- end }}
 
 {{- $vendor := resources.Match "js/vendor/*.js" -}}
+{{- /*
+  This is a hack; since jquery.min.js is in the vendor folder,
+  including all of matches breaks JS. As things are now, jquery.min.js
+  is the last slice element, thus we keep all elements apart from the last one
+*/ -}}
+{{- $vendor = first (sub (len $vendor) 1) $vendor -}}
+
 {{- $js := resources.Match "js/*.js" -}}
 {{- $targetDocsJSPath := printf "/docs/%s/assets/js/docs.js" .Site.Params.docs_version -}}
 {{- $docsJs := append $js $vendor | resources.Concat $targetDocsJSPath -}}
